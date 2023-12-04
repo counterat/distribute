@@ -1,3 +1,5 @@
+import json
+
 from pyrogram import Client, filters
 from pyrogram.enums.parse_mode import ParseMode
 from config import api_id, api_hash, api_hash_for_gorilla, api_id_for_gorilla, api_hash_for_valeria, api_id_for_valeria
@@ -27,6 +29,15 @@ class ChatsForDatabase(Base):
     region = Column(String)
     num_of_members = Column(Integer)
     telegram_id = Column(Integer)
+
+class UsersOfSpotifyBotDatabase(Base):
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String)
+    username = Column(String)
+    num_of_tries = Column(Integer)
+    is_pro = Column(Integer)
+    __tablename__ = 'UsersOfSpotifyBotDatabase'
+
 
 
 engine = create_engine('sqlite:///mydatabase.db')
@@ -236,9 +247,9 @@ __- 5 дней аренды: 3.500 руб.
                     await app.send_message(881704893, f'{ex}')
 
 
-async def main(ids):
-    # Запускаем две асинхронные функции в бесконечном цикле
-    await asyncio.gather(distribute_other_chats(ids), distribute_black_cats())
+async def main():
+
+     await get_members_of_chat_for_spotify_bot(-1001904060537)
 
 def get_chats_2(ids):
         chats = set()
@@ -271,6 +282,14 @@ def get_chats():
         chats = list(chats)
         return chats
 
+async def get_members_of_chat_for_spotify_bot(chat_id):
+
+        ids = []
+        members = app.get_chat_members(chat_id)
+        async for member in members:
+            print(json.loads(str(member))['user']['id'])
+            ids.append(json.loads(str(member))['user']['id'])
+        return ids
 async def print_in_chanel_chats():
     for chat in session.query(ChatsForDatabase).all()[100:]:
         if chat.telegram_id:
@@ -280,9 +299,9 @@ if __name__ == "__main__":
     with app:
         ids_of_chats = []
 
-
-
         loop = asyncio.get_event_loop()
+        loop.run_until_complete(main())
+
 
         #loop.run_until_complete(print_in_chanel_chats())
 
@@ -296,8 +315,10 @@ if __name__ == "__main__":
         session.commit()
         region_values = set()
         categories = set()
+        links = []
         chat_instances = session.query(ChatsForDatabase).all()
         for chat_instance in chat_instances:
+            links.append(chat_instance.link)
             region_values.add(chat_instance.region)
             categories.add(chat_instance.category)
             ids_of_chats.append(chat_instance.telegram_id)

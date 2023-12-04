@@ -2,7 +2,7 @@ import pyautogui
 import time
 import pyautogui
 import time
-from main import get_members_of_chat,get_chats, get_chats_2
+from main import get_members_of_chat,get_chats, get_chats_2, session, ChatsForDatabase
 
 
 time.sleep(3)
@@ -12,8 +12,11 @@ print(x,y)
 def subscr_to_chats(chats_links):
     for chat_link in chats_links:
         print(chat_link)
-        chat_link = chat_link.replace('@', '')
-        pyautogui.doubleClick(154,65)
+
+        pyautogui.click(154,65)
+
+        with pyautogui.hold('ctrl'):
+            pyautogui.press('a')
         pyautogui.press('backspace')
         pyautogui.typewrite(chat_link)
         pyautogui.moveTo(367,161, duration=1)
@@ -51,4 +54,8 @@ def paste_the_chat_links_to_the_bot(chats=[]):
         pyautogui.click()
         time.sleep(3)
         #pyautogui.click(1838,881)
-#paste_the_chat_links_to_the_bot()
+links = []
+chat_instances = session.query(ChatsForDatabase).all()
+for chat_instance in chat_instances[70:]:
+    links.append(chat_instance.link)
+subscr_to_chats(links)

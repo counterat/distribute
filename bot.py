@@ -75,6 +75,7 @@ __Телеграм ID чата__
     await message.delete()
 @dp.callback_query_handler(lambda callback_query: callback_query.data in ['scam_bot','distribution_telegram', 'database_of_chats' ])
 async def callback_query_handler_of_start_reply_kb(query: types.CallbackQuery):
+
     if query.data == 'scam_bot':
         template = '''
 
