@@ -30,13 +30,7 @@ class ChatsForDatabase(Base):
     num_of_members = Column(Integer)
     telegram_id = Column(Integer)
 
-class UsersOfSpotifyBotDatabase(Base):
-    id = Column(Integer, primary_key=True)
-    first_name = Column(String)
-    username = Column(String)
-    num_of_tries = Column(Integer)
-    is_pro = Column(Integer)
-    __tablename__ = 'UsersOfSpotifyBotDatabase'
+
 
 
 
