@@ -30,7 +30,7 @@ def download_video_from_yt(text:str, folder_name, inline_query = False):
 
     # Скачайте аудио в текущую директорию
     if not inline_query:
-        audio_stream.download(filename_prefix=f'''{folder_name}\\''', filename=f'{text}.mp4')
+        audio_stream.download(filename_prefix=f'''{folder_name}/''', filename=f'{text}.mp4')
     else:
         return audio_stream.url
 def download_video_from_yt_by_link(link:str, folder_name:str):
@@ -39,7 +39,7 @@ def download_video_from_yt_by_link(link:str, folder_name:str):
 
     # Скачайте аудио в текущую директорию
 
-    audio_stream.download(filename_prefix=f'''{folder_name}\\''', filename=f'{yt.title}.mp4')
+    audio_stream.download(filename_prefix=f'''{folder_name}/''', filename=f'{yt.title}.mp4')
 
     return  yt.title
 
