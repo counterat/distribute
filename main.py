@@ -32,7 +32,7 @@ class ChatsForDatabase(Base):
 
 
 
-
+apps = []
 
 engine = create_engine('sqlite:///mydatabase.db')
 
@@ -44,7 +44,6 @@ session = Session()
 metadata = MetaData()
 
 logging.basicConfig(level=logging.INFO)
-app = Client('my_account', api_id= api_id_for_valeria, api_hash=api_hash_for_valeria)
 
 chat_id = 189165596
 
@@ -137,25 +136,25 @@ async def distribute_other_chats(ids_of_chats):
     # # Выбираем случайный файл из списка
     #
     while True:
-    #     global last_index
-    #
-    #     for i in range(last_index, last_index+5):
-    #         try:
-    #             await app.get_chat(ids_of_chats[i])
-    #
-    #             print(f'Мы уже подписаны на чат {ids_of_chats[i]} ')
-    #             await asyncio.sleep(10)
-    #         except:
-    #             last_index = i
-    #             link = f"@{session.query(ChatsForDatabase).filter(ChatsForDatabase.telegram_id == ids_of_chats[i]).first().link.split('https://t.me/')[1]}"
-    #             try:
-    #
-    #                 await app.join_chat(link)
-    #
-    #             except Exception as ex:
-    #                 print(ex)
-    #             await asyncio.sleep(10)
-    #     await asyncio.sleep(1050)
+        global last_index
+
+        for i in range(last_index, last_index+5):
+             try:
+                 await app.get_chat(ids_of_chats[i])
+
+                 print(f'Мы уже подписаны на чат {ids_of_chats[i]} ')
+                 await asyncio.sleep(10)
+             except:
+                 last_index = i
+                 link = f"@{session.query(ChatsForDatabase).filter(ChatsForDatabase.telegram_id == ids_of_chats[i]).first().link.split('https://t.me/')[1]}"
+                 try:
+
+                     await app.join_chat(link)
+
+                 except Exception as ex:
+                    print(ex)
+                 
+             await asyncio.sleep(1050)
 
 
         template_my = '''
@@ -276,6 +275,38 @@ def get_chats():
         chats = list(chats)
         return chats
 
+def distribute_message(message):
+    
+        num_of_msgs = 36
+        chats = session.query(ChatsForDatabase).all()
+        for chat in chats:
+            for app in [app1, app2]:
+                with app:
+                    try:
+                        name_of_chat = chat.link.split('https://t.me/')[1]
+                        try:
+                            
+                            print(name_of_chat)
+                            app.send_photo(chat.telegram_id, 'photo/snap vpn banner free.png', caption=message, parse_mode=ParseMode.MARKDOWN)
+                            num_of_msgs += 1
+                            app1.send_message(-1002034379844, f'''
+            Сообщение под номером {num_of_msgs} со следующим содержанием было отправлено в чат @{name_of_chat}
+            ``{message}``
+            ''', parse_mode=ParseMode.MARKDOWN)
+                      
+                        except Exception as ex:
+                            print(ex)
+                            try:
+                                app.send_message(chat.telegram_id, message, parse_mode=ParseMode.MARKDOWN)
+                            except Exception as ex:
+                                print(ex)
+                                app.join_chat(f'@{name_of_chat}')
+                            except Exception as ex:
+                                print(ex)            
+                    except Exception as ex:
+                        print(ex)
+
+
 async def get_members_of_chat_for_spotify_bot(chat_id):
 
         ids = []
@@ -290,42 +321,24 @@ async def print_in_chanel_chats():
             await app.send_message(-1002024797560, text=chat.link)
             await asyncio.sleep(1)
 if __name__ == "__main__":
-    with app:
-        ids_of_chats = []
+    app1 = Client('my_account', api_id= api_id, api_hash=api_hash)
+    app2 = Client('my_account_valeria', api_id= api_id_for_valeria, api_hash=api_hash_for_valeria)
+    #app3 = Client('my_account_gorilla', api_id=api_id_for_gorilla, api_hash=api_hash_for_gorilla)
+    apps.append(app1)
+    apps.append(app2)
+    #apps.append(app3)
+            
+   
+    message = '''
+`В марте 2024 Роскомнадзор начнет блокировать популярные vpn сервисы . Воспользуйся устойчивым к блокировкам VPN чтобы сохранить доступ к любимым соц.сетям .`
 
-        loop = asyncio.get_event_loop()
-        loop.run_until_complete(main())
+__Обеспечьте безопасность своего интернет подключения с__ [SnapVpn](https://t.me/SnapVpnService_bot?start=6422208212). 
 
+🤝**Пригласи друга** и получи **месяц бесплатного использования**🤝
 
-        #loop.run_until_complete(print_in_chanel_chats())
-
-        #loop.run_until_complete(distribute_other_chats(ids_of_chats))
-        #loop.run_until_complete(process_sergey())
-        #ids =         loop.run_until_complete(process_favorite_messages())
-
-
-        print(len(ids))
-
-        session.commit()
-        region_values = set()
-        categories = set()
-        links = []
-        chat_instances = session.query(ChatsForDatabase).all()
-        for chat_instance in chat_instances:
-            links.append(chat_instance.link)
-            region_values.add(chat_instance.region)
-            categories.add(chat_instance.category)
-            ids_of_chats.append(chat_instance.telegram_id)
-
-
-        loop.run_until_complete(distribute_other_chats(ids_of_chats))
-
-
-
-
-
-        #loop.run_until_complete(main(ids))
-
+**ДОСТУПНА ОПЛАТА С РОССИЙСКИХ БАНКОВ**🏦🇷🇺
+'''
+    distribute_message(message)
 
 
 

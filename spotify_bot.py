@@ -17,7 +17,7 @@ from main import get_members_of_chat_for_spotify_bot, app
 from sqlalchemy import create_engine, Column, Integer, String, Float, JSON, DateTime, Boolean, ForeignKey,ARRAY, Table, MetaData
 from sqlalchemy.orm import declarative_base
 from sqlalchemy.orm import sessionmaker
-API_TOKEN = '6869452549:AAGsL6mjP1XNilz__OuizteqcsrIejO3oU4'
+API_TOKEN = '6869452549:AAEN0_bPbvvi09eKTzHYZtzMEczrxKBk9rM'
 # API_TOKEN = '6871959789:AAGJH-9tfLmNm22Ty-IVId9XFcDFkqHjohk'
 bot = Bot(token=API_TOKEN)
 dp = Dispatcher(bot)
